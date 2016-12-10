@@ -5,10 +5,10 @@ junctions<-read.table("junctions.txt", quote = "\"'", na.strings = "NA", colClas
 pipes<-read.table("pipes.txt", quote = "\"'", na.strings = "NA", colClasses="character")
 
 #Provide Qt
-Qt<-16.672
+Qt<-37.78
 
 #Calc Lt
-Lt<-0.00
+Lt<-0
 for (variable in 1:nrow(pipes)) {
   Lt<-Lt+as.double(pipes[variable,4])
 }
@@ -24,6 +24,8 @@ for (variable in 1:nrow(pipes)) {
   jun_pipe_aux<-c()
   pipe<-trimws(pipes[variable,2])
   pipe<-gsub("'", "", pipe)
+  
+  print(variable)
   
   #store from 2 column
   for (var in 1:nrow(pipes)) {
@@ -53,6 +55,49 @@ for (variable in 1:nrow(pipes)) {
   
   jun<-c(pipe, sum_pip)
   jun_pipe <- rbind(jun_pipe, jun)
+  
+  jun1<-c(pipe2, sum_pip)
+  jun_pipe <- rbind(jun_pipe, jun1)
+}
+
+for (variable in 1:nrow(pipes)) {
+  jun_pipe_aux<-c()
+  pipe<-trimws(pipes[variable,3])
+  pipe<-gsub("'", "", pipe)
+  
+  print(variable)
+  
+  #store from 2 column
+  for (var in 1:nrow(pipes)) {
+    pipe2<-trimws(pipes[var,2]) 
+    pipe2<-gsub("'", "", pipe2)
+    
+    if (pipe == pipe2) {
+      jun_pipe_aux <- rbind(jun_pipe_aux, (as.double(pipes[var,4])/2))
+    }
+  }
+  
+  #store from 3 column
+  for (var in 1:nrow(pipes)) {
+    pipe2<-trimws(pipes[var,3])
+    pipe2<-gsub("'", "", pipe2)
+    
+    if (pipe == pipe2) {
+      jun_pipe_aux <- rbind(jun_pipe_aux, (as.double(pipes[var,4])/2))
+    }
+  }
+  
+  #sum
+  sum_pip<-0
+  for (var in 1:nrow(jun_pipe_aux)) {
+    sum_pip<-sum_pip + jun_pipe_aux[var]
+  }
+  
+  jun<-c(pipe, sum_pip)
+  jun_pipe <- rbind(jun_pipe, jun)
+  
+  jun1<-c(pipe2, sum_pip)
+  jun_pipe <- rbind(jun_pipe, jun1)
 }
 
 #fulfil junctions file with demand
